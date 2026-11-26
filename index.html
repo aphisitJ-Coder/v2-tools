@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เครื่องมือโครงงาน ว.2</title>
+<meta name="description" content="ตรวจเล่มโครงงานตามคู่มือ ว.2 และทำโปสเตอร์ 60×90 ซม. ใช้ในเบราว์เซอร์ ไม่ต้องติดตั้ง">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=Sarabun:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F6F9; --sheet: #FFFFFF; --ink: #15213A; --muted: #5A6479; --line: #D8DEE8;
+  --accent: #1C4F8C; --accent-soft: #E5EDF8; --gold: #B8862B;
+  --shadow: 0 1px 2px rgba(21, 33, 58, .06), 0 4px 16px rgba(21, 33, 58, .05);
+  --f-display: "Sarabun", "Leelawadee UI", "Tahoma", sans-serif;
+  --f-body: "IBM Plex Sans Thai", "Leelawadee UI", "Tahoma", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E131D; --sheet: #161D2A; --ink: #E6EAF2; --muted: #9AA3B6; --line: #283246;
+    --accent: #86B4F0; --accent-soft: #1B2940; --gold: #E2B661; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E131D; --sheet: #161D2A; --ink: #E6EAF2; --muted: #9AA3B6; --line: #283246;
+  --accent: #86B4F0; --accent-soft: #1B2940; --gold: #E2B661; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.65 var(--f-body); }
+main { max-width: 880px; margin: 0 auto; padding: 48px 16px 40px; }
+.kicker { margin: 0 0 6px; color: var(--gold); font-weight: 600; font-size: 14px; letter-spacing: .02em; }
+h1 { margin: 0; font: 700 clamp(30px, 6vw, 42px)/1.2 var(--f-display); }
+.lead { margin: 10px 0 32px; color: var(--muted); max-width: 60ch; }
+.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.tool { background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow);
+  padding: 22px 22px 20px; display: flex; flex-direction: column; }
+.tool h2 { margin: 0 0 6px; font: 700 24px/1.3 var(--f-display); }
+.tool ul { margin: 0 0 18px; padding-left: 1.1em; color: var(--muted); flex: 1; }
+.tool li { margin: 2px 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { display: inline-block; padding: 9px 18px; border-radius: 8px; background: var(--accent); color: #fff;
+  font-weight: 600; text-decoration: none; }
+:root[data-theme="dark"] .btn { color: #0E131D; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color: #0E131D; } }
+.btn:hover { filter: brightness(1.08); }
+.dl { color: var(--accent); font-size: 14px; }
+.note { margin: 28px 0 0; padding: 14px 16px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; }
+footer { margin-top: 28px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker">โครงงานนักเรียน · คู่มือการเขียนเล่มโครงงาน ฉบับปรับปรุง 1/2566</p>
+  <h1>เครื่องมือโครงงาน ว.2</h1>
+  <p class="lead">ใช้ในเบราว์เซอร์ได้ทันที ไม่ต้องติดตั้ง ใช้ได้ทั้งคอมพิวเตอร์และโทรศัพท์ (ทำโปสเตอร์ใช้คอมพิวเตอร์จะสะดวกกว่า)</p>
+
+  <div class="tools">
+    <section class="tool">
+      <h2>ตรวจเล่ม ว.2</h2>
+      <ul>
+        <li>ลากไฟล์เล่ม <b>.docx</b> หรือ <b>.pdf</b> มาวาง</li>
+        <li>บอกจุดที่ต้องแก้ พร้อมหน้าและข้อความ</li>
+        <li>บันทึกผลตรวจเป็นไฟล์ PDF ส่งครูได้</li>
+      </ul>
+      <div class="actions">
+        <a class="btn" href="check.html">เปิดตัวตรวจเล่ม</a>
+        <a class="dl" href="check.html" download="ตรวจเล่ม-ว2.html">ดาวน์โหลดไว้ใช้ออฟไลน์</a>
+      </div>
+    </section>
+    <section class="tool">
+      <h2>ทำโปสเตอร์ ว.2</h2>
+      <ul>
+        <li>กรอกข้อมูลโครงงาน ได้โปสเตอร์ 60×90 ซม. ตามแบบ</li>
+        <li>เลือกสีได้ 8 ชุด หรือกำหนดเอง</li>
+        <li>ส่งออก PDF / PNG และบันทึกงานไว้แก้ต่อ</li>
+      </ul>
+      <div class="actions">
+        <a class="btn" href="poster.html">เปิดตัวทำโปสเตอร์</a>
+        <a class="dl" href="poster.html" download="ทำโปสเตอร์-ว2.html">ดาวน์โหลดไว้ใช้ออฟไลน์</a>
+      </div>
+    </section>
+  </div>
+
+  <p class="note">ไฟล์เล่มและข้อมูลโปสเตอร์ถูกประมวลผลในเครื่องของนักเรียนเท่านั้น ไม่มีการอัปโหลดไปที่ใด
+    ผลตรวจเป็นตัวช่วย ครูที่ปรึกษายังต้องตรวจซ้ำในข้อที่เครื่องตรวจไม่ได้</p>
+  <footer>ปรับปรุงล่าสุด 26 พ.ย. 2569</footer>
+</main>
+</body>
+</html>
