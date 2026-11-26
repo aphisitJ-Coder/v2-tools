@@ -884,6 +884,7 @@ function showStatus(info) {
 }
 function scalePreview() {
   const wrap = $('#pvwrap'), stage = $('#pvstage');
+  if (!wrap || !stage) return;
   const tb = $('.toolbar'), pv = $('.pv');
   if (tb && pv) pv.style.top = (tb.getBoundingClientRect().height + 12) + 'px';   // stay under the sticky toolbar
   if (!wrap.clientWidth) return;   // hidden (phone, editing view)
