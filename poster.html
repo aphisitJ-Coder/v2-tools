@@ -488,7 +488,7 @@ const ABSTRACT_HINT = {
 // [title th, title en, [[key, type, rows, label th, hint th, label en, hint en], …]]
 const FORM = [
   ['หัวเรื่องและผู้จัดทำ', 'Title and authors', [
-    ['titleTh', 'area', 2, 'ชื่อโครงการ (ภาษาไทย)', 'กด Enter เพื่อขึ้นบรรทัดที่ 2 (ไม่เกิน 2 บรรทัด) · โปสเตอร์ภาษาอังกฤษจะใช้ชื่อนี้เป็นบรรทัดรอง', 'Project title (Thai)', 'Press Enter for a 2nd line (2 lines at most) · on an English poster this becomes the smaller line'],
+    ['titleTh', 'area', 2, 'ชื่อโครงการ (ภาษาไทย)', 'กด Enter เพื่อขึ้นบรรทัดที่ 2 (ไม่เกิน 2 บรรทัด) · โปสเตอร์ภาษาอังกฤษไม่แสดงชื่อนี้', 'Project title (Thai)', 'Press Enter for a 2nd line (2 lines at most) · not shown on an English poster'],
     ['titleEm', 'text', 0, 'คำในชื่อเรื่องที่จะเน้นสี', 'พิมพ์ให้ตรงกับคำในชื่อเรื่องหลัก ปล่อยว่างได้', 'Words in the title to colour', 'Type them exactly as in the main title; may be left empty'],
     ['titleEn', 'area', 2, 'ชื่อโครงการ (ภาษาอังกฤษ)', 'โปสเตอร์ภาษาอังกฤษจะใช้ชื่อนี้เป็นชื่อหลัก', 'Project title (English)', 'On an English poster this is the main title'],
     ['authors', 'area', 3, 'ชื่อผู้จัดทำ', 'บรรทัดละ 1 คน', 'Authors', 'One name per line'],
@@ -656,11 +656,11 @@ function buildPoster() {
   // header
   if (s.logoImg) root.append(h('div', { class: 'abs logo' }, h('img', { src: s.logoImg, alt: '' })));
   const tb = h('div', { class: 'abs titlebox' + (s.logoImg ? '' : ' wide') });
-  // English poster: the English title is the big one and the Thai title the smaller line
-  const main = en && s.titleEn.trim() ? s.titleEn : s.titleTh, sub = en ? (s.titleEn.trim() ? s.titleTh : '') : s.titleEn;
+  // English poster: English title only — no Thai line under it (teacher: "เอาออก", 2026-11-27)
+  const main = en && s.titleEn.trim() ? s.titleEn : s.titleTh, sub = en ? '' : s.titleEn;
   let th = esc(main).replace(/\n/g, '<br>');
   if (s.titleEm && main.includes(s.titleEm)) th = th.replace(esc(s.titleEm), '<em>' + esc(s.titleEm) + '</em>');
-  tb.append(h('div', { class: 'th-title', html: th }), h('div', { class: 'rule', html: '<i></i><b></b><i></i>' }), h('div', { class: 'en-title', html: esc(sub).replace(/\n/g, '<br>') }));
+  tb.append(h('div', { class: 'th-title', html: th }), h('div', { class: 'rule', html: '<i></i><b></b><i></i>', style: en ? 'display:none' : null }), h('div', { class: 'en-title', html: esc(sub).replace(/\n/g, '<br>') }));
   root.append(tb);
   // authors
   const names = lines(s.authors).map(esc);
