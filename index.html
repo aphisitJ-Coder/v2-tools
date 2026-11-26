@@ -4,15 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>เครื่องมือโครงงาน ว.2</title>
-<meta name="description" content="ตรวจเล่มโครงงานตามคู่มือ ว.2 และทำโปสเตอร์ 60×90 ซม. ใช้ในเบราว์เซอร์ ไม่ต้องติดตั้ง">
+<meta name="description" content="ตรวจเล่มโครงงานตามคู่มือ ว.2 และทำโปสเตอร์ 60×90 ซม. ใช้ในเบราว์เซอร์ ไม่ต้องติดตั้ง · Check project books against the ว.2 manual and make 60×90 cm posters in the browser">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=Sarabun:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&family=Sarabun:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --paper: #F4F6F9; --sheet: #FFFFFF; --ink: #15213A; --muted: #5A6479; --line: #D8DEE8;
-  --accent: #1C4F8C; --accent-soft: #E5EDF8; --gold: #B8862B;
+  --accent: #1C4F8C; --accent-soft: #E5EDF8; --gold: #9A6A12;
   --shadow: 0 1px 2px rgba(21, 33, 58, .06), 0 4px 16px rgba(21, 33, 58, .05);
+  --shadow-hi: 0 2px 4px rgba(21, 33, 58, .08), 0 10px 28px rgba(21, 33, 58, .10);
   --f-display: "Sarabun", "Leelawadee UI", "Tahoma", sans-serif;
   --f-body: "IBM Plex Sans Thai", "Leelawadee UI", "Tahoma", system-ui, sans-serif;
   color-scheme: light;
@@ -21,71 +22,117 @@
   :root:not([data-theme="light"]) {
     --paper: #0E131D; --sheet: #161D2A; --ink: #E6EAF2; --muted: #9AA3B6; --line: #283246;
     --accent: #86B4F0; --accent-soft: #1B2940; --gold: #E2B661; color-scheme: dark;
+    --shadow: 0 1px 2px rgba(0,0,0,.3); --shadow-hi: 0 6px 24px rgba(0,0,0,.4);
   }
 }
 :root[data-theme="dark"] {
   --paper: #0E131D; --sheet: #161D2A; --ink: #E6EAF2; --muted: #9AA3B6; --line: #283246;
   --accent: #86B4F0; --accent-soft: #1B2940; --gold: #E2B661; color-scheme: dark;
+  --shadow: 0 1px 2px rgba(0,0,0,.3); --shadow-hi: 0 6px 24px rgba(0,0,0,.4);
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.65 var(--f-body); }
-main { max-width: 880px; margin: 0 auto; padding: 48px 16px 40px; }
+main { max-width: 900px; margin: 0 auto; padding: 28px 16px 40px; }
+.bar { display: flex; justify-content: flex-end; margin-bottom: 18px; }
+.segs { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; background: var(--sheet); }
+.seg { border: 0; background: none; color: var(--muted); padding: 3px 14px; border-radius: 999px; cursor: pointer; font: 600 14px/1.6 var(--f-body); }
+.seg[aria-pressed="true"] { background: var(--accent); color: var(--sheet); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .kicker { margin: 0 0 6px; color: var(--gold); font-weight: 600; font-size: 14px; letter-spacing: .02em; }
-h1 { margin: 0; font: 700 clamp(30px, 6vw, 42px)/1.2 var(--f-display); }
-.lead { margin: 10px 0 32px; color: var(--muted); max-width: 60ch; }
-.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.tool { background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow);
-  padding: 22px 22px 20px; display: flex; flex-direction: column; }
-.tool h2 { margin: 0 0 6px; font: 700 24px/1.3 var(--f-display); }
+h1 { margin: 0; font: 800 clamp(32px, 6vw, 46px)/1.15 var(--f-display); }
+.lead { margin: 10px 0 30px; color: var(--muted); max-width: 62ch; }
+.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; }
+.tool { position: relative; background: var(--sheet); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+  padding: 22px; display: flex; flex-direction: column; transition: box-shadow .15s, border-color .15s, transform .15s; }
+.tool:hover { box-shadow: var(--shadow-hi); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); transform: translateY(-1px); }
+.ico { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; margin-bottom: 12px; }
+.ico svg { width: 24px; height: 24px; }
+.tool h2 { margin: 0 0 6px; font: 700 25px/1.3 var(--f-display); }
+.tool h2 a { color: inherit; text-decoration: none; }
+.tool h2 a::after { content: ""; position: absolute; inset: 0; border-radius: 14px; }   /* whole card is the link */
 .tool ul { margin: 0 0 18px; padding-left: 1.1em; color: var(--muted); flex: 1; }
 .tool li { margin: 2px 0; }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.btn { display: inline-block; padding: 9px 18px; border-radius: 8px; background: var(--accent); color: #fff;
-  font-weight: 600; text-decoration: none; }
-:root[data-theme="dark"] .btn { color: #0E131D; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color: #0E131D; } }
-.btn:hover { filter: brightness(1.08); }
-.dl { color: var(--accent); font-size: 14px; }
-.note { margin: 28px 0 0; padding: 14px 16px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; }
-footer { margin-top: 28px; color: var(--muted); font-size: 13px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.go { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; background: var(--accent); color: var(--sheet); font-weight: 600; }
+.dl { position: relative; z-index: 1; color: var(--accent); font-size: 14px; }
+.steps { margin: 30px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; padding: 0; list-style: none; counter-reset: s; }
+.steps li { counter-increment: s; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 12px 50px; position: relative; font-size: 15px; }
+.steps li::before { content: counter(s); position: absolute; left: 14px; top: 12px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 600; display: grid; place-items: center; font-size: 14px; }
+.note { margin: 24px 0 0; padding: 14px 16px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; }
+footer { margin-top: 24px; color: var(--muted); font-size: 13px; }
+@media (prefers-reduced-motion: reduce) { .tool { transition: none; } .tool:hover { transform: none; } }
 </style>
 </head>
 <body>
 <main>
-  <p class="kicker">โครงงานนักเรียน · คู่มือการเขียนเล่มโครงงาน ฉบับปรับปรุง 1/2566</p>
-  <h1>เครื่องมือโครงงาน ว.2</h1>
-  <p class="lead">ใช้ในเบราว์เซอร์ได้ทันที ไม่ต้องติดตั้ง ใช้ได้ทั้งคอมพิวเตอร์และโทรศัพท์ (ทำโปสเตอร์ใช้คอมพิวเตอร์จะสะดวกกว่า)</p>
+  <div class="bar">
+    <div class="segs" role="group" aria-label="ภาษา / Language">
+      <button type="button" class="seg" data-l="th" lang="th">ไทย</button><button type="button" class="seg" data-l="en" lang="en">EN</button>
+    </div>
+  </div>
+  <p class="kicker" data-en="Student projects · Project book manual, revised edition 1/2566">โครงงานนักเรียน · คู่มือการเขียนเล่มโครงงาน ฉบับปรับปรุง 1/2566</p>
+  <h1 data-en="ว.2 Project Tools">เครื่องมือโครงงาน ว.2</h1>
+  <p class="lead" data-en="Works right in your browser — nothing to install. Use it on a computer or a phone (the poster maker is easier on a computer).">ใช้ในเบราว์เซอร์ได้ทันที ไม่ต้องติดตั้ง ใช้ได้ทั้งคอมพิวเตอร์และโทรศัพท์ (ทำโปสเตอร์ใช้คอมพิวเตอร์จะสะดวกกว่า)</p>
 
   <div class="tools">
     <section class="tool">
-      <h2>ตรวจเล่ม ว.2</h2>
+      <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="m9 14 2 2 4-4"/></svg></div>
+      <h2><a href="check.html" data-href="check.html" data-en="ว.2 Book Checker">ตรวจเล่ม ว.2</a></h2>
       <ul>
-        <li>ลากไฟล์เล่ม <b>.docx</b> หรือ <b>.pdf</b> มาวาง</li>
-        <li>บอกจุดที่ต้องแก้ พร้อมหน้าและข้อความ</li>
-        <li>บันทึกผลตรวจเป็นไฟล์ PDF ส่งครูได้</li>
+        <li data-en="Drop your book as <b>.docx</b> or <b>.pdf</b>">ลากไฟล์เล่ม <b>.docx</b> หรือ <b>.pdf</b> มาวาง</li>
+        <li data-en="See what to fix, with the page and the text">บอกจุดที่ต้องแก้ พร้อมหน้าและข้อความ</li>
+        <li data-en="Save the result as a PDF to send to your teacher">บันทึกผลตรวจเป็นไฟล์ PDF ส่งครูได้</li>
       </ul>
       <div class="actions">
-        <a class="btn" href="check.html">เปิดตัวตรวจเล่ม</a>
-        <a class="dl" href="check.html" download="ตรวจเล่ม-ว2.html">ดาวน์โหลดไว้ใช้ออฟไลน์</a>
+        <span class="go" aria-hidden="true" data-en="Open checker →">เปิดตัวตรวจเล่ม →</span>
+        <a class="dl" href="check.html" download="ตรวจเล่ม-ว2.html" data-en="Download for offline use">ดาวน์โหลดไว้ใช้ออฟไลน์</a>
       </div>
     </section>
     <section class="tool">
-      <h2>ทำโปสเตอร์ ว.2</h2>
+      <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.5" width="14" height="19" rx="1.5"/><path d="M5 7.5h14"/><path d="M8 11h8M8 14h5"/><rect x="8" y="16.5" width="8" height="2.5" rx=".5"/></svg></div>
+      <h2><a href="poster.html" data-href="poster.html" data-en="ว.2 Poster Maker">ทำโปสเตอร์ ว.2</a></h2>
       <ul>
-        <li>กรอกข้อมูลโครงงาน ได้โปสเตอร์ 60×90 ซม. ตามแบบ</li>
-        <li>เลือกสีได้ 8 ชุด หรือกำหนดเอง</li>
-        <li>ส่งออก PDF / PNG และบันทึกงานไว้แก้ต่อ</li>
+        <li data-en="Fill in your project and get a 60×90 cm poster in the college layout">กรอกข้อมูลโครงงาน ได้โปสเตอร์ 60×90 ซม. ตามแบบ</li>
+        <li data-en="Thai or English poster · 8 colour sets or your own">โปสเตอร์ภาษาไทยหรืออังกฤษ · สี 8 ชุด หรือกำหนดเอง</li>
+        <li data-en="Export PDF / PNG and save your work to continue later">ส่งออก PDF / PNG และบันทึกงานไว้แก้ต่อ</li>
       </ul>
       <div class="actions">
-        <a class="btn" href="poster.html">เปิดตัวทำโปสเตอร์</a>
-        <a class="dl" href="poster.html" download="ทำโปสเตอร์-ว2.html">ดาวน์โหลดไว้ใช้ออฟไลน์</a>
+        <span class="go" aria-hidden="true" data-en="Open poster maker →">เปิดตัวทำโปสเตอร์ →</span>
+        <a class="dl" href="poster.html" download="ทำโปสเตอร์-ว2.html" data-en="Download for offline use">ดาวน์โหลดไว้ใช้ออฟไลน์</a>
       </div>
     </section>
   </div>
 
-  <p class="note">ไฟล์เล่มและข้อมูลโปสเตอร์ถูกประมวลผลในเครื่องของนักเรียนเท่านั้น ไม่มีการอัปโหลดไปที่ใด
+  <ol class="steps">
+    <li data-en="Check the book and fix it until nothing is left to fix">ตรวจเล่มแล้วแก้จนไม่เหลือข้อที่ต้องแก้</li>
+    <li data-en="Make the poster from the finished book">ทำโปสเตอร์จากเล่มที่แก้เสร็จแล้ว</li>
+    <li data-en="Send both PDFs to your advisor">ส่งไฟล์ PDF ทั้งสองให้ครูที่ปรึกษา</li>
+  </ol>
+
+  <p class="note" data-en="Your book and poster are processed on your own device only — nothing is uploaded. The checker is a helper: your advisor still checks what a machine cannot.">ไฟล์เล่มและข้อมูลโปสเตอร์ถูกประมวลผลในเครื่องของนักเรียนเท่านั้น ไม่มีการอัปโหลดไปที่ใด
     ผลตรวจเป็นตัวช่วย ครูที่ปรึกษายังต้องตรวจซ้ำในข้อที่เครื่องตรวจไม่ได้</p>
-  <footer>ปรับปรุงล่าสุด 26 พ.ย. 2569</footer>
+  <footer data-en="Last updated 26 Nov 2026">ปรับปรุงล่าสุด 26 พ.ย. 2569</footer>
 </main>
+<script>
+(function () {
+  // page language: ?lang=en, else the choice remembered on this site (shared with both tools), else Thai
+  const get = () => { try { return localStorage.getItem('v2lang'); } catch (e) { return null; } };
+  const set = v => { try { localStorage.setItem('v2lang', v); } catch (e) { /* private mode */ } };
+  let lang = new URLSearchParams(location.search).get('lang') || get() || 'th';
+  if (lang !== 'en') lang = 'th';
+  const els = [...document.querySelectorAll('[data-en]')];
+  els.forEach(el => { el._th = el.innerHTML; });
+  const titles = { th: 'เครื่องมือโครงงาน ว.2', en: 'ว.2 Project Tools' };
+  function apply() {
+    document.documentElement.lang = lang;
+    document.title = titles[lang];
+    els.forEach(el => { el.innerHTML = lang === 'en' ? el.dataset.en : el._th; });
+    document.querySelectorAll('[data-href]').forEach(a => { a.href = a.dataset.href + (lang === 'en' ? '?lang=en' : ''); });
+    document.querySelectorAll('.seg').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === lang)));
+  }
+  document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => { lang = b.dataset.l; set(lang); apply(); }));
+  apply();
+})();
+</script>
 </body>
 </html>
