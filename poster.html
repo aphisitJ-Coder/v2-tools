@@ -73,6 +73,7 @@ button, input, textarea { font: inherit; }
 .field > label { font-weight: 600; font-size: .88rem; }
 .field input[type="text"], .field textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; background: var(--paper); color: var(--ink); resize: vertical; }
 .field textarea { line-height: 1.5; }
+.field.ioc input[type="text"], .field.ioc textarea { border-color: var(--err); box-shadow: 0 0 0 2px var(--err-soft); }
 .hint { font-size: .78rem; color: var(--muted); }
 .imgrow { display: flex; gap: 10px; align-items: center; }
 .imgprev { width: 84px; height: 64px; border: 1px dashed var(--line); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: repeating-conic-gradient(var(--paper) 0 25%, var(--sheet) 0 50%) 0 0/12px 12px; font-size: .72rem; color: var(--muted); flex: none; }
@@ -379,7 +380,7 @@ const FORM = [
   ['วิธีดำเนินงาน', [
     ['steps', 'ขั้นตอน', 'area', 4, 'บรรทัดละ 1 ขั้น: ชื่อขั้น | รายละเอียด (2–5 ขั้น)'],
     ['sample', 'กลุ่มตัวอย่าง', 'text', 0, ''],
-    ['tools', 'เครื่องมือ', 'text', 0, '']]],
+    ['tools', 'เครื่องมือ', 'text', 0, 'ถ้าเครื่องมือผ่านการตรวจ IOC ให้เขียนไว้ที่นี่ เช่น แบบประเมิน 15 ข้อ ผ่านการตรวจ IOC จากผู้เชี่ยวชาญ 3 ท่าน']]],
   ['ผลการดำเนินงาน', [
     ['chartTitle', 'ชื่อกราฟ', 'text', 0, 'ปล่อยว่างถ้าไม่ใช้กราฟ'],
     ['series', 'ชื่อชุดข้อมูลในกราฟ', 'text', 0, 'คั่นด้วย | เช่น ก่อนเล่น | หลังเล่น (1–3 ชุด)'],
@@ -387,7 +388,7 @@ const FORM = [
     ['chartMax', 'ค่าสูงสุดของแกน', 'text', 0, 'เช่น 5 สำหรับคะแนน 5 ระดับ หรือ 100 สำหรับร้อยละ'],
     ['resTitle', 'หัวข้อฝั่งขวา', 'text', 0, ''],
     ['kpis', 'ตัวเลขเด่น', 'area', 2, 'บรรทัดละ 1 ค่า: ชื่อ | ค่า (1–3 ค่า ถ้าใส่ 2 ค่าจะแสดงลูกศรผลต่าง)'],
-    ['table', 'ตาราง', 'area', 5, 'บรรทัดแรกเป็นหัวตาราง คั่นช่องด้วย | หรือวางจาก Excel'],
+    ['table', 'ตาราง', 'area', 5, 'บรรทัดแรกเป็นหัวตาราง คั่นช่องด้วย | หรือวางจาก Excel · ไม่ใส่ตารางค่า IOC (เป็นการตรวจเครื่องมือในบทที่ 3 ไม่ใช่ผลการดำเนินงาน)'],
     ['note', 'หมายเหตุใต้ตาราง', 'text', 0, '']]],
   ['สรุปและข้อเสนอแนะ', [
     ['conclusion', 'สรุปและอภิปรายผล', 'area', 6, ''],
@@ -628,6 +629,12 @@ const ROWS = [
 const TOP = 170, BOTTOM = 803, LEFT = 22, WIDTH = 556, PGAP = 12;
 const mm = px => px / PXMM;
 let fitInfo = { body: 34, ok: true, over: [] };
+/* IOC = experts checking the tools (chapter 3), not a result: it must not appear in ผลการดำเนินงาน
+   (teacher's rule, 2026-11-26). It may be mentioned in วิธีดำเนินงาน › เครื่องมือ. */
+const RESULT_KEYS = ['chartTitle', 'series', 'chartRows', 'resTitle', 'kpis', 'table', 'note'];
+const IOC_RE = /(^|[^A-Za-z])I\.?O\.?C(?![A-Za-z])|ดัชนีความสอดคล้อง/i;
+function iocFields() { return RESULT_KEYS.filter(k => IOC_RE.test(state[k] || '')); }
+function canExport() { return fitInfo.ok && !iocFields().length; }
 function heightOf(el) { el.style.height = 'auto'; return mm(el.offsetHeight); }
 function placeChart(k) {
   const box = P().querySelector('#pn-results .chartbox');
@@ -727,15 +734,19 @@ function applyTheme() {
 function showStatus(info) {
   const st = $('#fitStatus');
   st.replaceChildren();
-  st.className = 'fit ' + (info.ok ? 'ok' : 'bad');
-  if (info.ok) st.append(h('b', null, 'พอดี'), ' ตัวอักษรเนื้อหา ' + info.body + ' pt');
+  const ioc = iocFields(), ok = info.ok && !ioc.length;
+  st.className = 'fit ' + (ok ? 'ok' : 'bad');
+  RESULT_KEYS.forEach(k => { const el = document.getElementById('f-' + k); if (el) { el.closest('.field').classList.toggle('ioc', ioc.includes(k)); if (ioc.includes(k)) el.closest('details').open = true; } });
+  if (ioc.length) st.append(h('b', null, 'ผลการดำเนินงานมีค่า IOC'), ' IOC เป็นการตรวจคุณภาพเครื่องมือโดยผู้เชี่ยวชาญ (บทที่ 3) ไม่ใช่ผลการดำเนินงาน ให้ลบออกจากช่อง: '
+    + ioc.map(k => LABELS[k] || k).join(', ') + ' ถ้าต้องการกล่าวถึง ให้เขียนสั้น ๆ ในช่อง "เครื่องมือ" ของวิธีดำเนินงาน', info.ok ? '' : h('br'));
+  if (info.ok) { if (!ioc.length) st.append(h('b', null, 'พอดี'), ' ตัวอักษรเนื้อหา ' + info.body + ' pt'); }
   else {
     const parts = [];
     if (info.over.length) parts.push(info.over.join(', '));
     if (!info.footOk) parts.push('เอกสารอ้างอิง/ท้ายโปสเตอร์');
     st.append(h('b', null, 'ข้อความยาวเกิน'), ' ย่อแล้วถึง 30 pt ยังไม่พอ ให้ตัดข้อความในส่วน: ' + parts.join(', ') + (info.short > 0 ? ' (เกินประมาณ ' + Math.ceil(info.short / 10) + ' ซม.)' : ''));
   }
-  document.querySelectorAll('.need-fit').forEach(b => { b.disabled = !info.ok; b.title = info.ok ? '' : 'แก้ข้อความที่ยาวเกินก่อน แล้วจึงบันทึกได้'; });
+  document.querySelectorAll('.need-fit').forEach(b => { b.disabled = !ok; b.title = ok ? '' : (info.ok ? 'ลบค่า IOC ออกจากผลการดำเนินงานก่อน แล้วจึงบันทึกได้' : 'แก้ข้อความที่ยาวเกินก่อน แล้วจึงบันทึกได้'); });
 }
 function scalePreview() {
   const wrap = $('#pvwrap'), stage = $('#pvstage');
@@ -913,7 +924,7 @@ async function confirmStale(btn) {
   return false;
 }
 async function exportPdf(btn) {
-  if (!fitInfo.ok || !(await confirmStale(btn))) return;
+  if (!canExport() || !(await confirmStale(btn))) return;
   const label = btn.textContent; btn.disabled = true; btn.textContent = 'กำลังสร้าง PDF …';
   try {
     const c = await posterCanvas(150 / 96);
@@ -922,20 +933,20 @@ async function exportPdf(btn) {
     const pdf = pdfFromJpeg(jpeg, c.width, c.height, 600 / 25.4 * 72, 900 / 25.4 * 72, lines(state.titleTh).join(' '));
     await saveFile(baseName() + '-60x90cm.pdf', pdf);
   } catch (e) { toast('สร้าง PDF ไม่สำเร็จ (' + (e.message || e) + ') ลองเปิดด้วย Chrome หรือ Edge'); }
-  finally { btn.disabled = !fitInfo.ok; btn.textContent = label; }
+  finally { btn.disabled = !canExport(); btn.textContent = label; }
 }
 async function exportPng(btn) {
-  if (!fitInfo.ok || !(await confirmStale(btn))) return;
+  if (!canExport() || !(await confirmStale(btn))) return;
   const label = btn.textContent; btn.disabled = true; btn.textContent = 'กำลังสร้างภาพ …';
   try {
     const c = await posterCanvas(0.75);
     const blob = await new Promise(r => c.toBlob(r, 'image/png'));
     await saveFile(baseName() + '-ภาพตัวอย่าง.png', blob);
   } catch (e) { toast('สร้างภาพไม่สำเร็จ (' + (e.message || e) + ') ลองเปิดด้วย Chrome หรือ Edge'); }
-  finally { btn.disabled = !fitInfo.ok; btn.textContent = label; }
+  finally { btn.disabled = !canExport(); btn.textContent = label; }
 }
 async function printPoster(btn) {
-  if (!fitInfo.ok || !(await confirmStale(btn))) return;
+  if (!canExport() || !(await confirmStale(btn))) return;
   window.print();
 }
 function saveWork() { saveFile(baseName() + '-งาน.json', new Blob([JSON.stringify(Object.assign({ app: 'v2poster', v: 1 }, state))], { type: 'application/json' })); }
